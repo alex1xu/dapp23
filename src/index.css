@@ -1,13 +1,178 @@
 body {
+  /* global vars */
+  --font: "Trebuchet MS", sans-serif;
+  --transition-speed: 0.3s;
+  --red-team: #d84143;
+  --blue-team: #0fa6db;
+  --gold-color: #ffd700;
+
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background-image: url("images/background3.jpeg");
+  background-size: cover;
+  overflow: hidden;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: "Big";
+  src: URL("fonts/gomarice_no_continue.ttf") format("truetype");
+}
+
+h1 {
+  font-family: "Big";
+  line-height: 0;
+  font-size: 3rem;
+  letter-spacing: 0.1rem;
+}
+
+p {
+  font-family: var(--font);
+}
+
+button {
+  border: 0;
+  text-decoration: none;
+  border-radius: 15px;
+  background-color: rgba(208, 208, 208, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px);
+  color: rgb(0, 0, 0);
+  transition: var(--transition-speed) linear;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.383);
+}
+
+.home-parent {
+  min-height: 100vh;
+}
+
+.home-wrapper {
+  max-width: 1200px;
+  margin: auto;
+  margin-top: 5rem;
+}
+
+.home-container {
+  display: grid;
+  grid-template-areas:
+    "arena arena arena profile profile"
+    "arena arena arena bet bet"
+    "arena arena arena matchup matchup"
+    "arena arena arena matchup matchup";
+  gap: 1rem;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.51);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.241);
+  box-shadow: 0 4px 30px rgba(247, 247, 247, 0.554);
+}
+
+.home-container > * {
+  padding: 1rem;
+}
+
+.home-container > .profile-container {
+  grid-area: profile;
+}
+
+.home-container > .arena-container {
+  grid-area: arena;
+}
+
+.home-container > .matchup-container {
+  grid-area: matchup;
+}
+
+.home-container > .bet-container {
+  grid-area: bet;
+}
+
+.profile-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.profile-eth-counter {
+  color: var(--gold-color);
+  font-size: 5rem;
+}
+
+.card-holder {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.card-wrapper {
+  /* --------------temporary styling for mockup-------------- */
+  width: 100%;
+  margin: 0.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(60, 60, 60, 0.5);
+}
+
+.card-wrapper.red {
+  background: radial-gradient(
+    circle at top,
+    var(--red-team) 175px,
+    white 175px
+  );
+}
+
+.card-wrapper.blue {
+  background: radial-gradient(
+    circle at top,
+    var(--blue-team) 175px,
+    white 175px
+  );
+}
+
+.card-container {
+  padding: 1rem;
+  padding-top: 6rem;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.card-NFT-wrapper {
+  object-fit: contain;
+  width: 7rem;
+}
+
+.eth-tab {
+  border-radius: 1rem;
+  position: absolute;
+  background-color: white;
+  top: 20px;
+  right: 20px;
+  padding: 0.25rem 0.5rem;
+}
+
+.stat-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  text-align: center;
+}
+
+.vs-text {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--gold-color);
+  font-size: 8rem;
 }
