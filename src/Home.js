@@ -2,6 +2,7 @@ import { getDros, runFight, getOdds } from "./Utility";
 import { useEffect, useState } from "react";
 import { GiFist } from "react-icons/gi";
 import Card from "./components/Card";
+import { ethers } from "ethers";
 
 function Home() {
   const [drosList, setDrosList] = useState([]);
@@ -16,10 +17,41 @@ function Home() {
     fetchData();
   }, []);
 
+  //helper method to get user collection
+  const getData = (_account) => {
+    const options = {method: 'GET', headers: {accept: 'application/json'}};
+    fetch(`https://api.opensea.io/api/v1/collections?asset_owner=${_account}&offset=0&limit=300`, options)
+    .then(response => response.json())
+    .then(response => {setData(response);
+       console.log(response);
+      })
+    .catch(err => console.error(err));
+  };
+
+  //connect user address to app using MetaMask
+  const [account, setAccount] = useState("");
+  const [data, setData] = useState([]);
+
+  const connect = async() => {
+    // A Web3Provider wraps a standard Web3 provider, which is
+    // what MetaMask injects as window.ethereum into each page
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    // MetaMask requires requesting permission to connect users accounts
+    let res = await provider.send("eth_requestAccounts", []);
+    //console.log(res);
+    setAccount(res[0]);
+    getData(res[0]);
+  };
+
   return (
     <div className="home-parent">
       <div className="home-wrapper">
         <div className="home-container">
+          <div className="connect-wrapper">
+            <button 
+              onClick={connect} style={{width: "145px", height: "45px"}}> Connect Wallet 
+            </button>
+          </div>
           <div className="panel arena-container">
             <button
               onClick={() => {
@@ -56,5 +88,6 @@ function Home() {
     </div>
   );
 }
+
 
 export default Home;
