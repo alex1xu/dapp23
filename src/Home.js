@@ -7,6 +7,8 @@ import { ethers } from "ethers";
 function Home() {
   const [drosList, setDrosList] = useState([]);
 
+  //12-52: get user wallet data
+
   const fetchData = async () => {
     return await getDros().then((res) => {
       setDrosList(res);
@@ -33,15 +35,23 @@ function Home() {
   const [data, setData] = useState([]);
 
   const connect = async() => {
-    // A Web3Provider wraps a standard Web3 provider, which is
-    // what MetaMask injects as window.ethereum into each page
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    // MetaMask requires requesting permission to connect users accounts
-    let res = await provider.send("eth_requestAccounts", []);
-    //console.log(res);
-    setAccount(res[0]);
-    getData(res[0]);
+    //check if metamask is installed
+    if (window.ethereum) {
+      console.log('connected to ethereum')
+      // A Web3Provider wraps a standard Web3 provider, which is
+      // what MetaMask injects as window.ethereum into each page
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      // MetaMask requires requesting permission to connect users accounts
+      let res = await provider.send("eth_requestAccounts", []);
+     //console.log(res);
+      setAccount(res[0]);
+      getData(res[0]);
+    } else {
+      console.log('not connected to ethereum, suggest adding metamask chrome extension')
+    }
   };
+
+
 
   return (
     <div className="home-parent">
