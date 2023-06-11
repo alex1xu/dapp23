@@ -1,41 +1,78 @@
 import { getDros, runFight, getOdds } from "./Utility";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { GiFist } from "react-icons/gi";
 import Card from "./components/Card";
+import Ring from "./components/Ring";
 import { ethers } from "ethers";
 
 function Home() {
-  const [drosList, setDrosList] = useState([]);
+  const [drosList, setDrosList] = useState();
+  const [bet, setBet] = useState(1);
+  const [betAmount, setBetAmount] = useState(0);
+  const [winner, setWinner] = useState("");
+  const [odds1, setOdds1] = useState(30);
+  const [odds2, setOdds2] = useState(25);
+  const ringRef = useRef();
+  let fetched = false;
+
+  //12-52: get user wallet data
+
+  //12-52: get user wallet data
 
   const fetchData = async () => {
+    if (fetched) return;
+    fetched = true;
     return await getDros().then((res) => {
+      res[0].score =
+        res[0].attributes.at(-1)?.strength +
+        res[0].attributes.at(-1)?.health +
+        res[0].attributes.at(-1)?.speed +
+        res[0].attributes.at(-1)?.critical_rate +
+        res[0].attributes.at(-1)?.defense +
+        res[0].attributes.at(-1)?.stamina;
+      res[1].score =
+        res[1].attributes.at(-1)?.strength +
+        res[1].attributes.at(-1)?.health +
+        res[1].attributes.at(-1)?.speed +
+        res[1].attributes.at(-1)?.critical_rate +
+        res[1].attributes.at(-1)?.defense +
+        res[1].attributes.at(-1)?.stamina;
       setDrosList(res);
+      const odds = getOdds(res[0], res[1]);
+      setOdds1(odds[0]);
+      setOdds2(odds[1]);
+      ringRef.current.loadDros(res[0], res[1]);
       return res;
     });
   };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   //helper method to get user collection
   const getData = (_account) => {
-    const options = {method: 'GET', headers: {accept: 'application/json'}};
-    fetch(`https://api.opensea.io/api/v1/collections?asset_owner=${_account}&offset=0&limit=300`, options)
-    .then(response => response.json())
-    .then(response => {setData(response);
-       console.log(response);
+    const options = { method: "GET", headers: { accept: "application/json" } };
+    fetch(
+      `https://api.opensea.io/api/v1/collections?asset_owner=${_account}&offset=0&limit=300`,
+      options
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        setData(response);
+        console.log(response);
       })
-    .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   };
 
   //connect user address to app using MetaMask
   const [account, setAccount] = useState("");
   const [data, setData] = useState([]);
 
-  const connect = async() => {
+  const connect = async () => {
     // A Web3Provider wraps a standard Web3 provider, which is
     // what MetaMask injects as window.ethereum into each page
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     // MetaMask requires requesting permission to connect users accounts
     let res = await provider.send("eth_requestAccounts", []);
     //console.log(res);
@@ -43,43 +80,90 @@ function Home() {
     getData(res[0]);
   };
 
+  const castBet = () => {
+    // put your code for transaction before match here
+    console.log((bet == 1 ? "RED" : "BLUE") + " " + betAmount + " " + winner);
+  };
+
+  useEffect(() => {
+    // put your code for transaction after match here
+    if (winner == bet) {
+    }
+  }, [winner]);
+
   return (
     <div className="home-parent">
       <div className="home-wrapper">
         <div className="home-container">
           <div className="connect-wrapper">
-            <button 
-              onClick={connect} style={{width: "145px", height: "45px"}}> Connect Wallet 
+            <button
+              onClick={connect}
+              style={{ width: "145px", height: "45px" }}
+            >
+              {" "}
+              Connect Wallet
             </button>
           </div>
           <div className="panel arena-container">
-            <button
-              onClick={() => {
-                runFight();
-              }}
-            >
-              <GiFist style={{ width: "5rem", height: "5rem" }}></GiFist>
-            </button>
+            <div className="arena-controls">
+              <button onClick={() => ringRef.current.startMatch()}>
+                <GiFist style={{ width: "5rem", height: "5rem" }}></GiFist>
+              </button>
+            </div>
+            <div className="arena-ring">
+              <Ring ref={ringRef} setwinner={setWinner}></Ring>
+            </div>
           </div>
           <div className="panel profile-container">
             <div className="profile-wrapper">
               <div>
                 <h1>Profile</h1>
-                <h2>###Account#Number###</h2>
+                <h2>#12345abcde12345abcde</h2>
               </div>
               <div>
-                <h1 className="profile-eth-counter"># ETH</h1>
+                <h1 className="profile-eth-counter">12eth</h1>
               </div>
             </div>
           </div>
           <div className="panel bet-container">
             <h1>Odds</h1>
+            <div style={{ flexDirection: "row", display: "flex" }}>
+              <h1 className="odds-counter">{odds1}</h1>
+              <div className="toggle-button-cover">
+                <div className="button r" id="button-1">
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    onChange={(event) => setBet(3 - bet)}
+                  />
+                  <div className="knobs"></div>
+                  <div className="layer"></div>
+                </div>
+              </div>
+              <h1 className="odds-counter">{odds2}</h1>
+            </div>
+            <div style={{ flexDirection: "row", display: "flex" }}>
+              <input
+                type="text"
+                value={betAmount}
+                onChange={(event) => setBetAmount(event.target.value)}
+              />
+              <button
+                onClick={castBet}
+                style={{ width: "3rem", height: "3rem", marginLeft: ".5rem" }}
+              >
+                Bet
+              </button>
+            </div>
           </div>
           <div className="panel matchup-container">
             <h1>Matchup</h1>
             <div className="card-holder">
-              <Card dros={drosList[0]} team="red"></Card>
-              <Card dros={drosList[1]} team="blue"></Card>
+              <Card dros={drosList ? drosList[0] : undefined} team="red"></Card>
+              <Card
+                dros={drosList ? drosList[1] : undefined}
+                team="blue"
+              ></Card>
             </div>
             <h1 className="vs-text">VS</h1>
           </div>
@@ -88,6 +172,5 @@ function Home() {
     </div>
   );
 }
-
 
 export default Home;
