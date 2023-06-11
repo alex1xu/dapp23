@@ -23,21 +23,18 @@ function Home() {
     if (fetched) return;
     fetched = true;
     return await getDros().then((res) => {
-      res[0].score =
-        res[0].attributes.at(-1)?.strength +
-        res[0].attributes.at(-1)?.health +
-        res[0].attributes.at(-1)?.speed +
-        res[0].attributes.at(-1)?.critical_rate +
-        res[0].attributes.at(-1)?.defense +
-        res[0].attributes.at(-1)?.stamina;
-      res[1].score =
-        res[1].attributes.at(-1)?.strength +
-        res[1].attributes.at(-1)?.health +
-        res[1].attributes.at(-1)?.speed +
-        res[1].attributes.at(-1)?.critical_rate +
-        res[1].attributes.at(-1)?.defense +
-        res[1].attributes.at(-1)?.stamina;
-      setDrosList(res);
+      const res1 = [];
+      for (let i = 0; i < 100; i++) {
+        res[i].score =
+          res[i].attributes.at(-1)?.strength +
+          res[i].attributes.at(-1)?.health +
+          res[i].attributes.at(-1)?.speed +
+          res[i].attributes.at(-1)?.critical_rate +
+          res[i].attributes.at(-1)?.defense +
+          res[i].attributes.at(-1)?.stamina;
+        res1.push(res[i])
+      }
+      setDrosList(res1);
       const odds = getOdds(res[0], res[1]);
       setOdds1(odds[0]);
       setOdds2(odds[1]);
@@ -90,6 +87,18 @@ function Home() {
     if (winner == bet) {
     }
   }, [winner]);
+
+  // *************************
+  const getDrosShop = () => {
+    const cards = [];
+    for (let i = 0; i < 100; i = i+2)
+    {
+      cards.push(<Card dros={drosList ? drosList[i] : undefined} team="red"></Card>)
+      cards.push(<Card dros={drosList ? drosList[i++] : undefined} team="blue"></Card>)
+    }
+
+    return cards;
+  }
 
   return (
     <div className="home-parent">
@@ -157,15 +166,24 @@ function Home() {
             </div>
           </div>
           <div className="panel matchup-container">
-            <h1>Matchup</h1>
+            <h1>Matchup</h1> 
+            {/* **************** */}
             <div className="card-holder">
-              <Card dros={drosList ? drosList[0] : undefined} team="red"></Card>
+              <Card dros={drosList ? drosList[Math.round(Math.random() * 99)] : undefined} team="red"></Card>
               <Card
-                dros={drosList ? drosList[1] : undefined}
+                dros={drosList ? drosList[Math.round(Math.random() * 99)] : undefined}
                 team="blue"
               ></Card>
             </div>
             <h1 className="vs-text">VS</h1>
+          </div>
+
+          <div className="panel shop-container">
+            <h1> Drosophila Collection </h1>
+              <div className="card-holder">
+                {getDrosShop()}
+              </div>
+              
           </div>
         </div>
       </div>

@@ -13,7 +13,7 @@ body {
 
   background-image: url("images/background3.jpeg");
   background-size: cover;
-  overflow: hidden;
+  overflow: auto;
 }
 
 @font-face {
@@ -23,7 +23,7 @@ body {
 
 h1 {
   font-family: "Big";
-  line-height: 0;
+  line-height: 3rem;
   font-size: 3rem;
   letter-spacing: 0.1rem;
 }
@@ -64,7 +64,8 @@ button:hover {
 }
 
 .home-wrapper {
-  max-width: 1200px;
+  max-width: 1500px;
+  max-height: 600px;
   margin: auto;
   margin-top: 5rem;
 }
@@ -72,9 +73,9 @@ button:hover {
 .home-container {
   display: grid;
   grid-template-areas:
-    "arena profile"
-    "arena bet"
-    "arena matchup";
+    "arena profile profile"
+    "arena bet shop"
+    "arena matchup shop";
   gap: 1rem;
 }
 
@@ -107,6 +108,13 @@ button:hover {
 
 .home-container > .bet-container {
   grid-area: bet;
+}
+
+.home-container > .shop-container {
+  grid-area: shop;
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-snap-type: y mandatory;
 }
 
 .profile-wrapper {
