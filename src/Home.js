@@ -6,24 +6,46 @@ import Ring from "./components/Ring";
 import { ethers } from "ethers";
 
 function Home() {
-  const [drosList, setDrosList] = useState([]);
+  const [drosList, setDrosList] = useState();
   const [bet, setBet] = useState(1);
   const [betAmount, setBetAmount] = useState(0);
   const [winner, setWinner] = useState("");
   const [odds1, setOdds1] = useState(30);
   const [odds2, setOdds2] = useState(25);
   const ringRef = useRef();
+  let fetched = false;
 
   //12-52: get user wallet data
 
   //12-52: get user wallet data
 
   const fetchData = async () => {
+    if (fetched) return;
+    fetched = true;
     return await getDros().then((res) => {
+      res[0].score =
+        res[0].attributes.at(-1)?.strength +
+        res[0].attributes.at(-1)?.health +
+        res[0].attributes.at(-1)?.speed +
+        res[0].attributes.at(-1)?.critical_rate +
+        res[0].attributes.at(-1)?.defense +
+        res[0].attributes.at(-1)?.stamina;
+      res[1].score =
+        res[1].attributes.at(-1)?.strength +
+        res[1].attributes.at(-1)?.health +
+        res[1].attributes.at(-1)?.speed +
+        res[1].attributes.at(-1)?.critical_rate +
+        res[1].attributes.at(-1)?.defense +
+        res[1].attributes.at(-1)?.stamina;
       setDrosList(res);
+      const odds = getOdds(res[0], res[1]);
+      setOdds1(odds[0]);
+      setOdds2(odds[1]);
+      ringRef.current.loadDros(res[0], res[1]);
       return res;
     });
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -137,8 +159,11 @@ function Home() {
           <div className="panel matchup-container">
             <h1>Matchup</h1>
             <div className="card-holder">
-              <Card dros={drosList[0]} team="red"></Card>
-              <Card dros={drosList[1]} team="blue"></Card>
+              <Card dros={drosList ? drosList[0] : undefined} team="red"></Card>
+              <Card
+                dros={drosList ? drosList[1] : undefined}
+                team="blue"
+              ></Card>
             </div>
             <h1 className="vs-text">VS</h1>
           </div>

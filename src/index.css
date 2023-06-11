@@ -169,13 +169,95 @@ button:hover {
   width: 10rem;
 }
 
-.eth-tab {
+.rarity-tab {
   border-radius: 1rem;
   position: absolute;
-  background-color: white;
   top: 20px;
-  right: 20px;
-  padding: 0.25rem 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.glow-legendary {
+  text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500,
+    0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
+  color: #fff6a9;
+  font-size: 1.5rem;
+  line-height: 0;
+  text-align: center;
+  /* animation: blink 12s infinite; */
+  /* -webkit-animation: blink 12s infinite; */
+}
+
+.glow-rare {
+  text-shadow: 0 0 5px #90dda8, 0 0 15px #90dda8, 0 0 20px #90dda8,
+    0 0 40px #90dda8, 0 0 60px #5ab8a3, 0 0 10px #90dda8, 0 0 98px #5ab8a3;
+  color: #d4ffa9;
+  font-size: 1.5rem;
+  line-height: 0;
+  text-align: center;
+  /* animation: blink 12s infinite; */
+  /* -webkit-animation: blink 12s infinite; */
+}
+
+.glow-normal {
+  text-shadow: 0 0 5px #ffa1ea, 0 0 15px #ffa1ea, 0 0 20px #ffa1ea,
+    0 0 40px #ffa1ea, 0 0 60px #ffb695, 0 0 10px #ffa1ea, 0 0 98px #ffb695;
+  color: #876cd1;
+  font-size: 1.5rem;
+  line-height: 0;
+  text-align: center;
+  /* animation: blink 12s infinite; */
+  /* -webkit-animation: blink 12s infinite; */
+}
+
+@-webkit-keyframes blink {
+  20%,
+  24%,
+  55% {
+    color: #111;
+    text-shadow: none;
+  }
+
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    /*     color: #fccaff;
+    text-shadow: 0 0 5px #f562ff, 0 0 15px #f562ff, 0 0 25px #f562ff,
+      0 0 20px #f562ff, 0 0 30px #890092, 0 0 80px #890092, 0 0 80px #890092; */
+    text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500,
+      0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
+    color: #fff6a9;
+  }
+}
+
+@keyframes blink {
+  20%,
+  24%,
+  55% {
+    color: #111;
+    text-shadow: none;
+  }
+
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    /*     color: #fccaff;
+    text-shadow: 0 0 5px #f562ff, 0 0 15px #f562ff, 0 0 25px #f562ff,
+      0 0 20px #f562ff, 0 0 30px #890092, 0 0 80px #890092, 0 0 80px #890092; */
+    text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500,
+      0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
+    color: #fff6a9;
+  }
 }
 
 .stat-container {

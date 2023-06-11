@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import $ from "jquery";
 import { forwardRef, useImperativeHandle } from "react";
 
@@ -8,50 +8,15 @@ const drosWidth = 50;
 const effectWidth = 400;
 const effectHeight = 262;
 const mxv = 13;
+let ticks = 0;
 
 const Ring = forwardRef((props, ref) => {
   const canvasRef = useRef(null);
   const requestIdRef = useRef(null);
   let gameActive = false;
 
-  const dros1Ref = useRef({
-    x: startOffset,
-    y: arenaSize / 2,
-    mxv: mxv,
-    health: 5 + 5.0,
-    mxh: 5 + 5.0,
-    atk: 5 + 5.0,
-    acc: 5.0,
-    spd: 5.0,
-    crt: 5.0,
-    def: 5.0,
-    theta: 0,
-    mode: 0,
-    nextMode: 50 + Math.random() * 200,
-    w: drosWidth,
-    h: (drosWidth * 19) / 25,
-    src: "./placeholder.png",
-    team: "red",
-  });
-  const dros2Ref = useRef({
-    x: arenaSize - startOffset,
-    y: arenaSize / 2,
-    mxv: mxv,
-    health: 5 + 5.0,
-    mxh: 5 + 5.0,
-    atk: 5 + 5.0,
-    acc: 5.0,
-    spd: 5.0,
-    crt: 5.0,
-    def: 5.0,
-    theta: Math.PI,
-    mode: 0,
-    nextMode: 50 + Math.random() * 200,
-    w: drosWidth,
-    h: (drosWidth * 19) / 25,
-    src: "./placeholder.png",
-    team: "blue",
-  });
+  const dros1Ref = useRef({});
+  const dros2Ref = useRef({});
 
   const displayText = (text) => {
     const broadcastText = $(".broadcast-text");
@@ -78,8 +43,8 @@ const Ring = forwardRef((props, ref) => {
     const dros1 = dros1Ref.current,
       dros2 = dros2Ref.current;
 
-    dros1.nextMode = 1000000;
-    dros2.nextMode = 1000000;
+    dros1.nextMode = 100000000;
+    dros2.nextMode = 100000000;
 
     if (dros1.health <= 0) {
       props?.setwinner("BLUE");
@@ -156,12 +121,53 @@ const Ring = forwardRef((props, ref) => {
         }
       }
     },
+    loadDros(dros1, dros2) {
+      dros1Ref.current = {
+        x: startOffset,
+        y: arenaSize / 2,
+        mxv: mxv,
+        health: 5 + dros1?.attributes.at(-1)?.health / 3,
+        mxh: 5 + dros1?.attributes.at(-1)?.health / 3,
+        atk: 5 + dros1?.attributes.at(-1)?.strength / 3,
+        stm: dros1?.attributes.at(-1)?.stamina / 3,
+        spd: dros1?.attributes.at(-1)?.speed / 3,
+        crt: dros1?.attributes.at(-1)?.critical / 3,
+        def: dros1?.attributes.at(-1)?.defense / 3,
+        theta: 0,
+        mode: 0,
+        nextMode: 50 + Math.random() * 200,
+        w: drosWidth,
+        h: (drosWidth * 19) / 25,
+        src: dros1?.image,
+        team: "red",
+      };
+      dros2Ref.current = {
+        x: arenaSize - startOffset,
+        y: arenaSize / 2,
+        mxv: mxv,
+        health: 5 + dros2?.attributes.at(-1)?.health / 3,
+        mxh: 5 + dros2?.attributes.at(-1)?.health / 3,
+        atk: 5 + dros2?.attributes.at(-1)?.strength / 3,
+        stm: dros2?.attributes.at(-1)?.stamina / 3,
+        spd: dros2?.attributes.at(-1)?.speed / 3,
+        crt: dros2?.attributes.at(-1)?.critical / 3,
+        def: dros2?.attributes.at(-1)?.defense / 3,
+        theta: Math.PI,
+        mode: 0,
+        nextMode: 50 + Math.random() * 200,
+        w: drosWidth,
+        h: (drosWidth * 19) / 25,
+        src: dros2?.image,
+        team: "blue",
+      };
+    },
   }));
 
   const tick = () => {
     setTimeout(() => {
       if (!gameActive) return;
       if (!canvasRef.current) return;
+      ticks += 1;
       frame();
       requestIdRef.current = requestAnimationFrame(tick);
     }, 1000 / 50);
@@ -240,6 +246,8 @@ const Ring = forwardRef((props, ref) => {
         if (Math.random() < dros.crt / 100) damage = dros.atk * 3;
         else damage = dros.atk;
 
+        damage += (dros.stm * ticks) / 2000;
+
         if (Math.random() < dros.def / 100) damage = 0;
 
         opp.health -= damage / 300;
@@ -257,7 +265,7 @@ const Ring = forwardRef((props, ref) => {
     if (dros.x <= dros.w / 2) {
       if (dros.health <= 0) {
         dros.theta = Math.PI / 2;
-        dros.mxv = 35;
+        dros.mxv = 40;
       }
       dros.x = dros.w / 2 + 1;
       dros.theta = -Math.PI / 2 + Math.random() * Math.PI;
@@ -265,7 +273,7 @@ const Ring = forwardRef((props, ref) => {
     if (dros.x + dros.w / 2 >= arenaSize) {
       if (dros.health <= 0) {
         dros.theta = Math.PI / 2;
-        dros.mxv = 35;
+        dros.mxv = 40;
       }
       dros.x = arenaSize - 2 - dros.w / 2;
       dros.theta = Math.PI / 2 + Math.random() * Math.PI;
@@ -273,7 +281,7 @@ const Ring = forwardRef((props, ref) => {
     if (dros.y <= dros.h / 2) {
       if (dros.health <= 0) {
         dros.theta = Math.PI / 2;
-        dros.mxv = 35;
+        dros.mxv = 40;
       }
       dros.y = dros.h / 2 + 1;
       dros.theta = -Math.random() * Math.PI + Math.PI;
@@ -362,8 +370,8 @@ const Ring = forwardRef((props, ref) => {
       <div className="health-bar-container">
         <div
           className="health-bar red"
-          data-total={dros1Ref.current.mxh}
-          data-value={dros1Ref.current.health}
+          data-total={dros1Ref?.current?.mxh}
+          data-value={dros1Ref?.current?.health}
         >
           <div className="bar red">
             <div className="hit red"></div>
@@ -371,8 +379,8 @@ const Ring = forwardRef((props, ref) => {
         </div>
         <div
           className="health-bar blue"
-          data-total={dros2Ref.current.mxh}
-          data-value={dros2Ref.current.health}
+          data-total={dros2Ref?.current?.mxh}
+          data-value={dros2Ref?.current?.health}
         >
           <div className="bar blue">
             <div className="hit blue"></div>
