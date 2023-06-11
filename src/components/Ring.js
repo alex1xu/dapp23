@@ -9,6 +9,9 @@ const effectWidth = 400;
 const effectHeight = 262;
 const mxv = 13;
 let ticks = 0;
+let lastTick = 0;
+let lastTickX = -1,
+  lastTickY = -1;
 
 const Ring = forwardRef((props, ref) => {
   const canvasRef = useRef(null);
@@ -314,7 +317,12 @@ const Ring = forwardRef((props, ref) => {
     renderPointer.call(this, dros2.x, dros2.team, dros2.mode);
 
     if (checkCollide(dros1, dros2) && (dros1.mode == 1 || dros2.mode == 1)) {
-      renderAttack.call(this, (dros1.x + dros2.x) / 2, (dros1.y + dros2.y) / 2);
+      if (ticks - lastTick >= 7) {
+        lastTick = ticks;
+        lastTickX = (dros1.x + dros2.x) / 2;
+        lastTickY = (dros1.y + dros2.y) / 2;
+      }
+      if (ticks - lastTick <= 5) renderAttack.call(this, lastTickX, lastTickY);
       $(".arena-ring").addClass("shaker");
       $(".arena-ring").addClass("tint");
       setTimeout(() => {
@@ -346,12 +354,13 @@ const Ring = forwardRef((props, ref) => {
     this.globalAlpha = 0.1;
     this.translate(x, y);
     this.rotate((Math.random() * Math.PI) / 4 - Math.PI / 8);
+    const mult = Math.random() * 1.5;
     this.drawImage(
       image,
-      -effectWidth / 2,
-      -effectHeight / 2,
-      effectWidth,
-      effectHeight
+      (-effectWidth * mult) / 2,
+      (-effectHeight * mult) / 2,
+      effectWidth * mult,
+      effectHeight * mult
     );
     this.restore();
   }
