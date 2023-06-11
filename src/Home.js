@@ -9,7 +9,9 @@ function Home() {
   const [drosList, setDrosList] = useState([]);
   const [bet, setBet] = useState(1);
   const [betAmount, setBetAmount] = useState(0);
-  const [winner, setWinner] = useState();
+  const [winner, setWinner] = useState("");
+  const [odds1, setOdds1] = useState(30);
+  const [odds2, setOdds2] = useState(25);
   const ringRef = useRef();
 
   //12-52: get user wallet data
@@ -57,8 +59,15 @@ function Home() {
   };
 
   const castBet = () => {
+    // put your code for transaction before match here
     console.log((bet == 1 ? "RED" : "BLUE") + " " + betAmount + " " + winner);
   };
+
+  useEffect(() => {
+    // put your code for transaction after match here
+    if (winner == bet) {
+    }
+  }, [winner]);
 
   return (
     <div className="home-parent">
@@ -97,7 +106,7 @@ function Home() {
           <div className="panel bet-container">
             <h1>Odds</h1>
             <div style={{ flexDirection: "row", display: "flex" }}>
-              <h1 className="odds-counter">31</h1>
+              <h1 className="odds-counter">{odds1}</h1>
               <div className="toggle-button-cover">
                 <div className="button r" id="button-1">
                   <input
@@ -109,7 +118,7 @@ function Home() {
                   <div className="layer"></div>
                 </div>
               </div>
-              <h1 className="odds-counter">25</h1>
+              <h1 className="odds-counter">{odds2}</h1>
             </div>
             <div style={{ flexDirection: "row", display: "flex" }}>
               <input
