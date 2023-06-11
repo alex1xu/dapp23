@@ -5,8 +5,13 @@ function Card(props) {
         <div className="eth-tab">
           <p style={{ lineHeight: 0 }}>eth #</p>
         </div>
-        <img src="sample.png" className="card-NFT-wrapper"></img>
-        <h2>NFT Name/Number</h2>
+        <img
+          src="placeholder.png"
+          className={
+            "card-NFT-wrapper" + (props?.team == "red" ? " reflect" : "")
+          }
+        ></img>
+        <h2>#12345</h2>
         <div className="stat-container">
           <div>
             <p style={{ lineHeight: 0 }}>
@@ -18,13 +23,33 @@ function Card(props) {
             <p style={{ lineHeight: 0 }}>
               <b>#</b>
             </p>
-            <p>Attack</p>
+            <p>Health</p>
           </div>
           <div>
             <p style={{ lineHeight: 0 }}>
               <b>#</b>
             </p>
-            <p>Attack</p>
+            <p>Speed</p>
+          </div>
+        </div>
+        <div className="stat-container">
+          <div>
+            <p style={{ lineHeight: 0 }}>
+              <b>#</b>
+            </p>
+            <p>Crit %</p>
+          </div>
+          <div>
+            <p style={{ lineHeight: 0 }}>
+              <b>#</b>
+            </p>
+            <p>Defense</p>
+          </div>
+          <div>
+            <p style={{ lineHeight: 0 }}>
+              <b>#</b>
+            </p>
+            <p>Accuracy</p>
           </div>
         </div>
       </div>
