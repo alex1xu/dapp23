@@ -290,7 +290,15 @@ const Ring = forwardRef((props, ref) => {
       dros.theta = -Math.random() * Math.PI + Math.PI;
     }
     if (dros.y + dros.h / 2 >= arenaSize) {
-      if (dros.health <= 0) dros.mxv = 0;
+      if (dros.health <= 0) {
+        if (dros.mode == -1 || dros.mode == -2) {
+          dros.mode = -2;
+          dros.theta += 0.3;
+          dros.x += 20;
+        }
+        if (dros.x + dros.w / 2 + 4 >= arenaSize) dros.mode = -3;
+        return dros;
+      }
       dros.y = arenaSize - 2 - dros.h / 2;
       dros.theta = Math.PI;
     }
@@ -347,14 +355,14 @@ const Ring = forwardRef((props, ref) => {
     this.restore();
   }
 
-  function renderAttack(x, y) {
+  function renderAttack(x, y, mult = 1) {
     const image = new Image();
     image.src = "./effect.png";
     this.save();
     this.globalAlpha = 0.1;
     this.translate(x, y);
     this.rotate((Math.random() * Math.PI) / 4 - Math.PI / 8);
-    const mult = Math.random() * 1.5;
+    mult = Math.random() * 1.5;
     this.drawImage(
       image,
       (-effectWidth * mult) / 2,
