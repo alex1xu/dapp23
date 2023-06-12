@@ -94,7 +94,7 @@ function Home() {
     for (let i = 0; i < 100; i = i+2)
     {
       cards.push(<Card dros={drosList ? drosList[i] : undefined} team="red"></Card>)
-      cards.push(<Card dros={drosList ? drosList[i++] : undefined} team="blue"></Card>)
+      cards.push(<Card dros={drosList ? drosList[i+1] : undefined} team="blue"></Card>)
     }
 
     return cards;
