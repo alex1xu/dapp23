@@ -254,7 +254,7 @@ function Home() {
             <div style={{ flexDirection: "row", display: "flex" }}>
               <button
                 onClick={connectWallet}
-                style={{ height: "3rem", marginLeft: ".5rem" }}
+                style={{ height: "3rem", marginRight: ".5rem" }}
               >
                 Connect
               </button>
