@@ -4,6 +4,8 @@ import { GiFist } from "react-icons/gi";
 import Card from "./components/Card";
 import Ring from "./components/Ring";
 import { ethers } from "ethers";
+import Web3 from 'web3';
+import configuration from './Tickets.json';
 
 function Home() {
   const [drosList, setDrosList] = useState();
@@ -16,10 +18,6 @@ function Home() {
   let fetched = false;
   const [dros1, setDros1] = useState();
   const [dros2, setDros2] = useState();
-
-  //12-52: get user wallet data
-
-  //12-52: get user wallet data
 
   const fetchData = async () => {
     if (fetched) return;
@@ -54,38 +52,59 @@ function Home() {
     fetchData();
   }, []);
 
-  //helper method to get user collection
-  const getData = (_account) => {
-    const options = { method: "GET", headers: { accept: "application/json" } };
-    fetch(
-      `https://api.opensea.io/api/v1/collections?asset_owner=${_account}&offset=0&limit=300`,
-      options
-    )
+  //connect user address to app using MetaMask
+  const [account, setAccount] = useState("");
+  const [data, setData] = useState([]);
+
+  const castBet = async () => {
+    //helper method to get user collection
+    const getData = (_account) => {
+      const options = { method: "GET", headers: { accept: "application/json" } };
+      fetch(
+        `https://api.opensea.io/api/v1/collections?asset_owner=${_account}&offset=0&limit=300`,
+        options
+      )
       .then((response) => response.json())
       .then((response) => {
         setData(response);
         console.log(response);
       })
       .catch((err) => console.error(err));
-  };
+    };
 
-  //connect user address to app using MetaMask
-  const [account, setAccount] = useState("");
-  const [data, setData] = useState([]);
+    const connect = async () => {
+      // A Web3Provider wraps a standard Web3 provider, which is
+      // what MetaMask injects as window.ethereum into each page
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      // MetaMask requires requesting permission to connect users accounts
+      let res = await provider.send("eth_requestAccounts", []);
+      //console.log(res);
+      setAccount(res[0]);
+      getData(res[0]);
+    };
 
-  const connect = async () => {
-    // A Web3Provider wraps a standard Web3 provider, which is
-    // what MetaMask injects as window.ethereum into each page
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    // MetaMask requires requesting permission to connect users accounts
-    let res = await provider.send("eth_requestAccounts", []);
-    //console.log(res);
-    setAccount(res[0]);
-    getData(res[0]);
-  };
+    connect();
 
-  const castBet = () => {
-    // put your code for transaction before match here
+    const CONTRACT_ADDRESS = configuration.networks['5777'].address;
+    const CONTRACT_ABI = configuration.abi;
+
+    const web3 = new Web3(
+      Web3.givenProvider || 'http://127.0.0.1:7545'
+    );
+    const smartContract = new web3.eth.Contract(
+      CONTRACT_ABI,
+      CONTRACT_ADDRESS
+    );
+
+    const buyTicket = async (ticket) => {
+      await smartContract.methods
+        .buyTicket(ticket.id)
+        .send({ from: account, value: ticket.price });
+    }; 
+
+    const ticket = await smartContract.methods.tickets(0).call();
+    buyTicket(ticket);
+
     console.log((bet == 1 ? "RED" : "BLUE") + " " + betAmount + " " + winner);
   };
 
@@ -114,15 +133,6 @@ function Home() {
     <div className="home-parent">
       <div className="home-wrapper">
         <div className="home-container">
-          <div className="connect-wrapper">
-            <button
-              onClick={connect}
-              style={{ width: "145px", height: "45px" }}
-            >
-              {" "}
-              Connect Wallet
-            </button>
-          </div>
           <div className="panel arena-container">
             <div className="arena-controls">
               <button onClick={() => ringRef.current.startMatch()}>
