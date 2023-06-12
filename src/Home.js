@@ -114,18 +114,16 @@ function Home() {
     }
   }, [winner]);
 
-  // *************************
   const getDrosShop = () => {
     const cards = [];
     for (let i = 0; i < 100; i = i + 2) {
       cards.push(
-        <Card dros={drosList ? drosList[i] : undefined} team="red"></Card>
+        <button id='shopdrosbutton' onClick={() =>{setDros1(drosList[i]); setOdds1(getOdds(drosList[i], dros2));}}> <Card dros={drosList ? drosList[i] : undefined} team="red"></Card> </button>
       );
       cards.push(
-        <Card dros={drosList ? drosList[i + 1] : undefined} team="blue"></Card>
+        <button id='shopdrosbutton' onClick={() => {setDros2(drosList[i+1]); setOdds2(getOdds(dros1, drosList[i+1]));}}> <Card dros={drosList ? drosList[i + 1] : undefined} team="blue"></Card> </button>
       );
     }
-
     return cards;
   };
 
@@ -135,7 +133,8 @@ function Home() {
         <div className="home-container">
           <div className="panel arena-container">
             <div className="arena-controls">
-              <button onClick={() => ringRef.current.startMatch()}>
+              <button onClick={() => {ringRef.current.loadDros(dros1, dros2); 
+                ringRef.current.startMatch();}}>
                 <GiFist style={{ width: "5rem", height: "5rem" }}></GiFist>
               </button>
             </div>
@@ -187,7 +186,6 @@ function Home() {
           </div>
           <div className="panel matchup-container">
             <h1>Matchup</h1>
-            {/* **************** */}
             <div className="card-holder">
               <Card dros={drosList ? dros1 : undefined} team="red"></Card>
               <Card dros={drosList ? dros2 : undefined} team="blue"></Card>
@@ -197,7 +195,7 @@ function Home() {
 
           <div className="panel shop-container">
             <h1> Drosophila </h1>
-            <h1> Collection</h1>
+            <h1> Shop </h1>
             <div className="card-holder">{getDrosShop()}</div>
           </div>
         </div>
