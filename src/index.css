@@ -529,3 +529,10 @@ input[type="text"] {
 input[type="text"]:focus {
   border: 3px solid #555;
 }
+
+#shopdrosbutton{
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  outline:none;
+}
