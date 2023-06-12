@@ -6,14 +6,25 @@ body {
   --blue-team: #0fa6db;
   --gold-color: #ffd700;
 
-  margin: 0;
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background-image: url("images/background3.jpeg");
-  background-size: cover;
-  overflow: auto;
+  background: url("images/Arena.png");
+  background-repeat: repeat;
+  background-attachment: scroll;
+  animation: slideshow 40s linear infinite;
+  place-items: center;
+  overflow: hidden;
+}
+
+@keyframes slideshow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -2160px 0;
+  }
 }
 
 @font-face {
