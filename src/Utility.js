@@ -2,13 +2,11 @@ export const getDros = async () => {
   const dros = [];
   for (let i = 0; i < 100; i++) {
     const dros1 = await fetch(
-      "https://ipfs.io/ipfs/QmcppupRBTq8Q1xMJ14d8vR1GCQUdWr1cLN21vNJC8jwKr/" +
-        i
+      "https://ipfs.io/ipfs/QmcppupRBTq8Q1xMJ14d8vR1GCQUdWr1cLN21vNJC8jwKr/" + i
     );
     dros.push(await dros1.json());
-
   }
-    return dros;
+  return dros;
 };
 
 export const getOdds = (dros1, dros2) => {
