@@ -23,7 +23,7 @@ body {
 
 h1 {
   font-family: "Big";
-  line-height: 3rem;
+  line-height: 0;
   font-size: 3rem;
   letter-spacing: 0.1rem;
 }
@@ -108,13 +108,16 @@ button:hover {
 
 .home-container > .bet-container {
   grid-area: bet;
+  /* display: flex;
+  flex-direction: row; */
 }
 
 .home-container > .shop-container {
   grid-area: shop;
-  overflow: scroll;
+  overflow-x: scroll;
   scroll-snap-type: x mandatory;
-  scroll-snap-type: y mandatory;
+  display: flex;
+  flex-direction: column;
 }
 
 .profile-wrapper {

@@ -136,7 +136,7 @@ function Home() {
           </div>
           <div className="panel bet-container">
             <h1>Odds</h1>
-            <div style={{ flexDirection: "row", display: "flex" }}>
+            <div style={{flexDirection: "row", display: "flex" }}>
               <h1 className="odds-counter">{odds1}</h1>
               <div className="toggle-button-cover">
                 <div className="button r" id="button-1">
@@ -179,11 +179,11 @@ function Home() {
           </div>
 
           <div className="panel shop-container">
-            <h1> Drosophila Collection </h1>
-              <div className="card-holder">
-                {getDrosShop()}
-              </div>
-              
+            <h1> Drosophila </h1>
+            <h1> Collection</h1>
+            <div className="card-holder">
+              {getDrosShop()}
+            </div>
           </div>
         </div>
       </div>
