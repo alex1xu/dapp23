@@ -1,1 +1,1 @@
-# HSR23 Drosophila fight sim
+# HSR23 Drosophila Fighting Simulator
