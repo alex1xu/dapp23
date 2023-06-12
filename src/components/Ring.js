@@ -53,7 +53,7 @@ const Ring = forwardRef((props, ref) => {
 
     if (dros1.health <= 0) {
       props?.setwinner("BLUE");
-      dros1.theta = Math.atan2(
+      dros1.vtheta = Math.atan2(
         arenaSize / 2 - dros1.y,
         arenaSize / 2 - dros1.x
       );
@@ -63,7 +63,7 @@ const Ring = forwardRef((props, ref) => {
       dros2.mode = 0;
     } else {
       props?.setwinner("RED");
-      dros2.theta = Math.atan2(
+      dros2.vtheta = Math.atan2(
         arenaSize / 2 - dros2.y,
         arenaSize / 2 - dros2.x
       );
@@ -260,8 +260,9 @@ const Ring = forwardRef((props, ref) => {
         cumDamage[opp.team] += damage / 300;
       }
     } else if (dros.mode == -1) {
-      dros.x += dros.mxv * Math.cos(dros.theta);
-      dros.y += dros.mxv * Math.sin(dros.theta);
+      dros.x += dros.mxv * Math.cos(dros.vtheta);
+      dros.y += dros.mxv * Math.sin(dros.vtheta);
+      dros.theta += 0.6;
     }
 
     dros = checkBounds(dros);
@@ -270,47 +271,27 @@ const Ring = forwardRef((props, ref) => {
 
   function checkBounds(dros) {
     if (dros.x <= dros.w / 2) {
-      if (dros.health <= 0) {
-        dros.theta = Math.PI / 2;
-        dros.mxv = 40;
-      }
+      if (dros.health <= 0)
+        dros.vtheta = -Math.PI / 2 + Math.random() * Math.PI;
+      else dros.theta = -Math.PI / 2 + Math.random() * Math.PI;
       dros.x = dros.w / 2 + 1;
-      dros.theta = -Math.PI / 2 + Math.random() * Math.PI;
     }
     if (dros.x + dros.w / 2 >= arenaSize) {
-      if (dros.health <= 0) {
-        dros.theta = Math.PI / 2;
-        dros.mxv = 40;
-      }
+      if (dros.health <= 0) dros.vtheta = Math.PI / 2 + Math.random() * Math.PI;
+      else dros.theta = Math.PI / 2 + Math.random() * Math.PI;
       dros.x = arenaSize - 2 - dros.w / 2;
-      dros.theta = Math.PI / 2 + Math.random() * Math.PI;
     }
     if (dros.y <= dros.h / 2) {
-      if (dros.health <= 0) {
-        dros.theta = Math.PI / 2;
-        dros.mxv = 40;
-      }
+      if (dros.health <= 0) dros.vtheta = -Math.random() * Math.PI + Math.PI;
+      else dros.theta = -Math.random() * Math.PI + Math.PI;
       dros.y = dros.h / 2 + 1;
-      dros.theta = -Math.random() * Math.PI + Math.PI;
     }
     if (dros.y + dros.h / 2 >= arenaSize) {
       if (dros.health <= 0) {
-        if (dros.mode == -1 || dros.mode == -2) {
-          dros.mode = -2;
-          dros.theta += 0.3;
-          if (!dros.v) {
-            if (dros.theta >= Math.PI / 2 && dros.theta <= (Math.PI * 3) / 2)
-              dros.v = -20;
-            else dros.v = 20;
-          }
-          dros.x += dros.v;
-        }
-        if (dros.x + dros.w / 2 + 4 >= arenaSize || dros.x - 4 <= dros.w / 2)
-          dros.mode = -3;
-        return dros;
-      }
+        dros.mode = -2;
+        dros.y = arenaSize - dros.h / 2;
+      } else dros.theta = Math.PI;
       dros.y = arenaSize - 2 - dros.h / 2;
-      dros.theta = Math.PI;
     }
 
     return dros;
@@ -335,12 +316,6 @@ const Ring = forwardRef((props, ref) => {
     renderPointer.call(this, dros2.x, dros2.team, dros2.mode);
 
     if (checkCollide(dros1, dros2) && (dros1.mode == 1 || dros2.mode == 1)) {
-      // if (ticks - lastTick >= 10) {
-      //   lastTick = ticks;
-      //   lastTickX = (dros1.x + dros2.x) / 2;
-      //   lastTickY = (dros1.y + dros2.y) / 2;
-      // }
-      // if (ticks - lastTick <= 8) renderAttack.call(this, lastTickX, lastTickY);
       renderAttack.call(this, (dros1.x + dros2.x) / 2, (dros1.y + dros2.y) / 2);
       $(".arena-ring").addClass("shaker");
       $(".arena-ring").addClass("tint");

@@ -11,9 +11,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   background: url("images/Arena.png");
-  background-repeat: repeat;
+  /* background-repeat: repeat;
   background-attachment: scroll;
-  animation: slideshow 40s linear infinite;
+  animation: slideshow 40s linear infinite; */
   place-items: center;
   overflow: hidden;
 }
