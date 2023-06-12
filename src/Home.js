@@ -14,6 +14,8 @@ function Home() {
   const [odds2, setOdds2] = useState(25);
   const ringRef = useRef();
   let fetched = false;
+  const [dros1, setDros1] = useState();
+  const [dros2, setDros2] = useState();
 
   //12-52: get user wallet data
 
@@ -32,13 +34,18 @@ function Home() {
           res[i].attributes.at(-1)?.critical_rate +
           res[i].attributes.at(-1)?.defense +
           res[i].attributes.at(-1)?.stamina;
-        res1.push(res[i])
+        res1.push(res[i]);
       }
       setDrosList(res1);
       const odds = getOdds(res[0], res[1]);
       setOdds1(odds[0]);
       setOdds2(odds[1]);
-      ringRef.current.loadDros(res[0], res[1]);
+      const first = Math.round(Math.random() * 99);
+      let second = Math.round(Math.random() * 99);
+      while (first == second) second = Math.round(Math.random() * 99);
+      setDros1(res[first]);
+      setDros2(res[second]);
+      ringRef.current.loadDros(res[first], res[second]);
       return res;
     });
   };
@@ -91,14 +98,17 @@ function Home() {
   // *************************
   const getDrosShop = () => {
     const cards = [];
-    for (let i = 0; i < 100; i = i+2)
-    {
-      cards.push(<Card dros={drosList ? drosList[i] : undefined} team="red"></Card>)
-      cards.push(<Card dros={drosList ? drosList[i+1] : undefined} team="blue"></Card>)
+    for (let i = 0; i < 100; i = i + 2) {
+      cards.push(
+        <Card dros={drosList ? drosList[i] : undefined} team="red"></Card>
+      );
+      cards.push(
+        <Card dros={drosList ? drosList[i + 1] : undefined} team="blue"></Card>
+      );
     }
 
     return cards;
-  }
+  };
 
   return (
     <div className="home-parent">
@@ -136,7 +146,7 @@ function Home() {
           </div>
           <div className="panel bet-container">
             <h1>Odds</h1>
-            <div style={{flexDirection: "row", display: "flex" }}>
+            <div style={{ flexDirection: "row", display: "flex" }}>
               <h1 className="odds-counter">{odds1}</h1>
               <div className="toggle-button-cover">
                 <div className="button r" id="button-1">
@@ -166,14 +176,11 @@ function Home() {
             </div>
           </div>
           <div className="panel matchup-container">
-            <h1>Matchup</h1> 
+            <h1>Matchup</h1>
             {/* **************** */}
             <div className="card-holder">
-              <Card dros={drosList ? drosList[Math.round(Math.random() * 99)] : undefined} team="red"></Card>
-              <Card
-                dros={drosList ? drosList[Math.round(Math.random() * 99)] : undefined}
-                team="blue"
-              ></Card>
+              <Card dros={drosList ? dros1 : undefined} team="red"></Card>
+              <Card dros={drosList ? dros2 : undefined} team="blue"></Card>
             </div>
             <h1 className="vs-text">VS</h1>
           </div>
@@ -181,9 +188,7 @@ function Home() {
           <div className="panel shop-container">
             <h1> Drosophila </h1>
             <h1> Collection</h1>
-            <div className="card-holder">
-              {getDrosShop()}
-            </div>
+            <div className="card-holder">{getDrosShop()}</div>
           </div>
         </div>
       </div>

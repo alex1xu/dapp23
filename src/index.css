@@ -6,14 +6,25 @@ body {
   --blue-team: #0fa6db;
   --gold-color: #ffd700;
 
-  margin: 0;
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background-image: url("images/background3.jpeg");
-  background-size: cover;
-  overflow: auto;
+  background: url("images/Arena.png");
+  /* background-repeat: repeat;
+  background-attachment: scroll;
+  animation: slideshow 40s linear infinite; */
+  place-items: center;
+  overflow: hidden;
+}
+
+@keyframes slideshow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -2160px 0;
+  }
 }
 
 @font-face {
@@ -192,8 +203,8 @@ button:hover {
   text-shadow: 0 0 5px #ffa500, 0 0 15px #ffa500, 0 0 20px #ffa500,
     0 0 40px #ffa500, 0 0 60px #ff0000, 0 0 10px #ff8d00, 0 0 98px #ff0000;
   color: #fff6a9;
-  font-size: 1.5rem;
-  line-height: 1;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
   text-align: center;
   /* animation: blink 12s infinite; */
   /* -webkit-animation: blink 12s infinite; */
@@ -203,8 +214,8 @@ button:hover {
   text-shadow: 0 0 5px #90dda8, 0 0 15px #90dda8, 0 0 20px #90dda8,
     0 0 40px #90dda8, 0 0 60px #5ab8a3, 0 0 10px #90dda8, 0 0 98px #5ab8a3;
   color: #d4ffa9;
-  font-size: 1.5rem;
-  line-height: 1;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
   text-align: center;
   /* animation: blink 12s infinite; */
   /* -webkit-animation: blink 12s infinite; */
@@ -214,8 +225,8 @@ button:hover {
   text-shadow: 0 0 5px #ffa1ea, 0 0 15px #ffa1ea, 0 0 20px #ffa1ea,
     0 0 40px #ffa1ea, 0 0 60px #ffb695, 0 0 10px #ffa1ea, 0 0 98px #ffb695;
   color: #876cd1;
-  font-size: 1.5rem;
-  line-height: 1;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
   text-align: center;
   /* animation: blink 12s infinite; */
   /* -webkit-animation: blink 12s infinite; */

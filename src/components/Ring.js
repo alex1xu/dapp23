@@ -6,12 +6,14 @@ const arenaSize = 600;
 const startOffset = 25;
 const drosWidth = 50;
 const effectWidth = 400;
-const effectHeight = 262;
+const effectHeight = 300;
 const mxv = 13;
 let ticks = 0;
 let lastTick = 0;
 let lastTickX = -1,
   lastTickY = -1;
+
+let cumDamage = { red: 0, blue: 0 };
 
 const Ring = forwardRef((props, ref) => {
   const canvasRef = useRef(null);
@@ -51,7 +53,7 @@ const Ring = forwardRef((props, ref) => {
 
     if (dros1.health <= 0) {
       props?.setwinner("BLUE");
-      dros1.theta = Math.atan2(
+      dros1.vtheta = Math.atan2(
         arenaSize / 2 - dros1.y,
         arenaSize / 2 - dros1.x
       );
@@ -61,7 +63,7 @@ const Ring = forwardRef((props, ref) => {
       dros2.mode = 0;
     } else {
       props?.setwinner("RED");
-      dros2.theta = Math.atan2(
+      dros2.vtheta = Math.atan2(
         arenaSize / 2 - dros2.y,
         arenaSize / 2 - dros2.x
       );
@@ -228,6 +230,8 @@ const Ring = forwardRef((props, ref) => {
       dros.y += dros.mxv * Math.sin(dros.theta);
     } else if (dros.mode == 1) {
       if (dros.nextMode < 0) {
+        opp.health -= cumDamage[opp.team];
+        cumDamage[opp.team] = 0;
         dros.mode = 0;
         dros.nextMode =
           100 +
@@ -253,11 +257,12 @@ const Ring = forwardRef((props, ref) => {
 
         if (Math.random() < dros.def / 100) damage = 0;
 
-        opp.health -= damage / 300;
+        cumDamage[opp.team] += damage / 300;
       }
     } else if (dros.mode == -1) {
-      dros.x += dros.mxv * Math.cos(dros.theta);
-      dros.y += dros.mxv * Math.sin(dros.theta);
+      dros.x += dros.mxv * Math.cos(dros.vtheta);
+      dros.y += dros.mxv * Math.sin(dros.vtheta);
+      dros.theta += 0.6;
     }
 
     dros = checkBounds(dros);
@@ -266,41 +271,27 @@ const Ring = forwardRef((props, ref) => {
 
   function checkBounds(dros) {
     if (dros.x <= dros.w / 2) {
-      if (dros.health <= 0) {
-        dros.theta = Math.PI / 2;
-        dros.mxv = 40;
-      }
+      if (dros.health <= 0)
+        dros.vtheta = -Math.PI / 2 + Math.random() * Math.PI;
+      else dros.theta = -Math.PI / 2 + Math.random() * Math.PI;
       dros.x = dros.w / 2 + 1;
-      dros.theta = -Math.PI / 2 + Math.random() * Math.PI;
     }
     if (dros.x + dros.w / 2 >= arenaSize) {
-      if (dros.health <= 0) {
-        dros.theta = Math.PI / 2;
-        dros.mxv = 40;
-      }
+      if (dros.health <= 0) dros.vtheta = Math.PI / 2 + Math.random() * Math.PI;
+      else dros.theta = Math.PI / 2 + Math.random() * Math.PI;
       dros.x = arenaSize - 2 - dros.w / 2;
-      dros.theta = Math.PI / 2 + Math.random() * Math.PI;
     }
     if (dros.y <= dros.h / 2) {
-      if (dros.health <= 0) {
-        dros.theta = Math.PI / 2;
-        dros.mxv = 40;
-      }
+      if (dros.health <= 0) dros.vtheta = -Math.random() * Math.PI + Math.PI;
+      else dros.theta = -Math.random() * Math.PI + Math.PI;
       dros.y = dros.h / 2 + 1;
-      dros.theta = -Math.random() * Math.PI + Math.PI;
     }
     if (dros.y + dros.h / 2 >= arenaSize) {
       if (dros.health <= 0) {
-        if (dros.mode == -1 || dros.mode == -2) {
-          dros.mode = -2;
-          dros.theta += 0.3;
-          dros.x += 20;
-        }
-        if (dros.x + dros.w / 2 + 4 >= arenaSize) dros.mode = -3;
-        return dros;
-      }
+        dros.mode = -2;
+        dros.y = arenaSize - dros.h / 2;
+      } else dros.theta = Math.PI;
       dros.y = arenaSize - 2 - dros.h / 2;
-      dros.theta = Math.PI;
     }
 
     return dros;
@@ -325,12 +316,7 @@ const Ring = forwardRef((props, ref) => {
     renderPointer.call(this, dros2.x, dros2.team, dros2.mode);
 
     if (checkCollide(dros1, dros2) && (dros1.mode == 1 || dros2.mode == 1)) {
-      if (ticks - lastTick >= 7) {
-        lastTick = ticks;
-        lastTickX = (dros1.x + dros2.x) / 2;
-        lastTickY = (dros1.y + dros2.y) / 2;
-      }
-      if (ticks - lastTick <= 5) renderAttack.call(this, lastTickX, lastTickY);
+      renderAttack.call(this, (dros1.x + dros2.x) / 2, (dros1.y + dros2.y) / 2);
       $(".arena-ring").addClass("shaker");
       $(".arena-ring").addClass("tint");
       setTimeout(() => {
@@ -357,12 +343,12 @@ const Ring = forwardRef((props, ref) => {
 
   function renderAttack(x, y, mult = 1) {
     const image = new Image();
-    image.src = "./effect.png";
+    image.src = "./BAM.png";
     this.save();
-    this.globalAlpha = 0.1;
+    this.globalAlpha = 0.3;
     this.translate(x, y);
     this.rotate((Math.random() * Math.PI) / 4 - Math.PI / 8);
-    mult = Math.random() * 1.5;
+    mult = 0.5 + Math.random();
     this.drawImage(
       image,
       (-effectWidth * mult) / 2,
